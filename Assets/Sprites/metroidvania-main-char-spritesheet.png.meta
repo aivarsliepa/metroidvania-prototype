@@ -1,0 +1,296 @@
+fileFormatVersion: 2
+guid: 5bbbb97f7c463a44c8f4167795679c4b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5443571666116915577
+    second: metroidvania-main-char-spritesheet_0
+  - first:
+      213: -6476982472975460999
+    second: metroidvania-main-char-spritesheet_1
+  - first:
+      213: 6907549629837840639
+    second: metroidvania-main-char-spritesheet_2
+  - first:
+      213: 1681293452317743718
+    second: metroidvania-main-char-spritesheet_3
+  - first:
+      213: 4511195934696689387
+    second: metroidvania-main-char-spritesheet_4
+  - first:
+      213: -5908405401175246792
+    second: metroidvania-main-char-spritesheet_5
+  - first:
+      213: -7183901249469934864
+    second: metroidvania-main-char-spritesheet_6
+  - first:
+      213: -6558729730425472059
+    second: metroidvania-main-char-spritesheet_7
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 400
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 1159
+        width: 140
+        height: 239
+      alignment: 9
+      pivot: {x: 0.85839057, y: 0.94902974}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78e48b3396c8474b0800000000000000
+      internalID: -5443571666116915577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 852
+        y: 1264
+        width: 227
+        height: 237
+      alignment: 9
+      pivot: {x: 0.46316138, y: 0.04130097}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 975ddd1e1c22d16a0800000000000000
+      internalID: -6476982472975460999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 1338
+        y: 1153
+        width: 216
+        height: 224
+      alignment: 9
+      pivot: {x: 0.099945635, y: 0.9106565}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff09dd26acb8cdf50800000000000000
+      internalID: 6907549629837840639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_3
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 872
+        width: 112
+        height: 178
+      alignment: 9
+      pivot: {x: 0.37555912, y: 0.9384807}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66ad69cac77255710800000000000000
+      internalID: 1681293452317743718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_4
+      rect:
+        serializedVersion: 2
+        x: 809
+        y: 824
+        width: 369
+        height: 324
+      alignment: 9
+      pivot: {x: 0.49622327, y: 0.56022364}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bee48cf1dccfa9e30800000000000000
+      internalID: 4511195934696689387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_5
+      rect:
+        serializedVersion: 2
+        x: 1348
+        y: 682
+        width: 262
+        height: 373
+      alignment: 9
+      pivot: {x: 0.0903898, y: 0.93717897}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83833f97790210ea0800000000000000
+      internalID: -5908405401175246792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_6
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 418
+        width: 191
+        height: 276
+      alignment: 9
+      pivot: {x: 0.80647767, y: 0.9443813}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f21cd320e7ad4c90800000000000000
+      internalID: -7183901249469934864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: metroidvania-main-char-spritesheet_7
+      rect:
+        serializedVersion: 2
+        x: 1149
+        y: 383
+        width: 114
+        height: 284
+      alignment: 9
+      pivot: {x: 0.47554952, y: 0.9662162}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cb32305f06baf4a0800000000000000
+      internalID: -6558729730425472059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
