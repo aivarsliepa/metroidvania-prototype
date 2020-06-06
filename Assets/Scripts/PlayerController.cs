@@ -5,35 +5,44 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // components
     public Rigidbody2D rBody;
     public BoxCollider2D bCollider;
     public BoxCollider2D wallCheck;
     public BoxCollider2D groundCheck;
 
-
-    [SerializeField] float moveSpeed = 600f;
-    private float movement;
-    private bool jump = false;
-
+    // configuration
+    [SerializeField] private float moveSpeed = 600f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float wallJumpSideForce = 10f;
-
     [SerializeField] private int maxNumberOfJumps = 1;
-    private int timesJumped = 0;
-    private bool isFacingRight = true;
+    [SerializeField] private int maxNumberOfDashes = 1;
+    [SerializeField] private float maxWallSlideVelocity = 1f;
+    [SerializeField] private float disabledMoveTimeAfterWallJump = 0.15f;
+    [SerializeField] private float dashSpeed = 2000f;
+    [SerializeField] private float dashTime = 0.2f;
 
+    // events
     private BoolUnityEvent groundEvent;
     private BoolUnityEvent wallEvent;
 
+    // state
+    private int timesJumped = 0;
+    private int timesDashed = 0;
+    private bool isFacingRight = true;
     private bool isAgainstWall = false;
-    public float maxWallSlideVelocity = 1f;
-
     private bool isMovementEnabled = true;
-    private float disabledMoveTimeAfterWallJump = 0.15f;
+    private bool isDashing = false;
+    private bool isGrounded = true;
 
     // abilities
     public bool isWallJumpEnabled = true;
     public bool isDashEnabled = true;
+
+    // player actions
+    private float movement;
+    private bool jumpAction = false;
+    private bool dashAction = false;
 
     private void Awake()
     {
@@ -52,7 +61,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            jump = true;
+            jumpAction = true;
+        }
+
+        if (Input.GetButtonDown("Dash"))
+        {
+            if (isDashEnabled)
+            {
+                dashAction = true;
+            }
         }
     }
 
@@ -60,6 +77,7 @@ public class PlayerController : MonoBehaviour
     {
         FlipCheck();
         WallSlideCheck();
+        ApplyDash();
         ApplyJumping();
         ApplyHorizontalMovement();
     }
@@ -74,22 +92,20 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyJumping()
     {
-        if (jump)
+        if (jumpAction && CanJump())
         {
-            if (maxNumberOfJumps > timesJumped)
+            timesJumped++;
+            if (isAgainstWall)
             {
-                timesJumped++;
-                if (isAgainstWall)
-                {
-                    WallJump();
-                } else
-                {
-                    Jump();
-                }
+                WallJump();
+            }
+            else
+            {
+                Jump();
             }
         }
 
-        jump = false;
+        jumpAction = false;
     }
 
     private void Jump()
@@ -105,14 +121,9 @@ public class PlayerController : MonoBehaviour
         ResetHorizontalVelocity();
         var jumpVector = new Vector2(GetBackDirection().x * wallJumpSideForce, 1 * jumpForce);
         rBody.AddForce(jumpVector, ForceMode2D.Impulse);
-        StartCoroutine(WaitToEnableMovement());
-    }
 
-    IEnumerator WaitToEnableMovement()
-    {
         isMovementEnabled = false;
-        yield return new WaitForSeconds(disabledMoveTimeAfterWallJump);
-        isMovementEnabled = true;
+        StartCoroutine(Utils.WaitForAction(disabledMoveTimeAfterWallJump, () => isMovementEnabled = true));
     }
 
     private void ResetHorizontalVelocity()
@@ -147,15 +158,16 @@ public class PlayerController : MonoBehaviour
         isAgainstWall = didEnter;
         if (didEnter && isWallJumpEnabled)
         {
-            ResetJumps();
+            ResetActions();
         }
     }
 
     private void GroundTrigger(bool didEnter)
     {
+        isGrounded = didEnter;
         if (didEnter)
         {
-            ResetJumps();
+            ResetActions();
         }
     }
 
@@ -171,13 +183,70 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private Vector2 GetDirectionVector()
+    {
+        return isFacingRight ? Vector2.right : Vector2.left;
+    }
+
     private Vector2 GetBackDirection()
     {
-        return isFacingRight ? Vector2.left : Vector2.right;
+        return GetDirectionVector() * -1;
     }
 
     private void ResetJumps()
     {
         timesJumped = 0;
+    }
+
+    private void ResetDash()
+    {
+        timesDashed = 0;
+    }
+
+    private void ResetActions()
+    {
+        ResetDash();
+        ResetJumps();
+    }
+
+    private bool CanJump()
+    {
+        return maxNumberOfJumps > timesJumped;
+    }
+
+    private bool CanDash()
+    {
+        return maxNumberOfDashes > timesDashed;
+    }
+
+    private void ApplyDash()
+    {
+        if (!isDashing && dashAction && CanDash())
+        {
+            isDashing = true;
+            isMovementEnabled = false;
+            timesDashed++;
+            StartCoroutine(Utils.WaitForAction(dashTime, () =>
+            {
+                isDashing = false;
+                isMovementEnabled = true;
+                if (isGrounded)
+                {
+                    ResetDash();
+                }
+            }));
+        }
+
+        if (isDashing)
+        {
+            Dash();
+        }
+
+        dashAction = false;
+    }
+
+    private void Dash()
+    {
+        rBody.velocity = new Vector2(dashSpeed * GetDirectionVector().x * Time.fixedDeltaTime, 0);
     }
 }
