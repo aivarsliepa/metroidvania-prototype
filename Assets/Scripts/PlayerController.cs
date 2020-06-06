@@ -1,34 +1,39 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rBody;
     public BoxCollider2D bCollider;
     public BoxCollider2D wallCheck;
-    public CircleCollider2D groundCheck;
+    public BoxCollider2D groundCheck;
 
 
     [SerializeField] float moveSpeed = 600f;
     private float movement;
     private bool jump = false;
-    private bool isGrounded = false;
 
-    [SerializeField] private float jumpForce = 3f;
-    [SerializeField] private float wallJumpSideForce = 1f;
+    [SerializeField] private float jumpForce = 20f;
+    [SerializeField] private float wallJumpSideForce = 10f;
 
-    [SerializeField] private int maxJumps = 1;
-    public int timesJumped = 0;
+    [SerializeField] private int maxNumberOfJumps = 1;
+    private int timesJumped = 0;
     private bool isFacingRight = true;
 
     private BoolUnityEvent groundEvent;
     private BoolUnityEvent wallEvent;
 
-    public bool isAgainstWall = false;
+    private bool isAgainstWall = false;
     public float maxWallSlideVelocity = 1f;
+
+    private bool isMovementEnabled = true;
+    private float disabledMoveTimeAfterWallJump = 0.15f;
+
+    // abilities
+    public bool isWallJumpEnabled = true;
+    public bool isDashEnabled = true;
 
     private void Awake()
     {
@@ -55,12 +60,14 @@ public class PlayerController : MonoBehaviour
     {
         FlipCheck();
         WallSlideCheck();
-        ApplyHorizontalMovement();
         ApplyJumping();
+        ApplyHorizontalMovement();
     }
 
     private void ApplyHorizontalMovement()
     {
+        if (!isMovementEnabled) return;
+
         Vector3 targetVelocity = new Vector2(moveSpeed * movement * Time.fixedDeltaTime, rBody.velocity.y);
         rBody.velocity = targetVelocity;
     }
@@ -69,13 +76,13 @@ public class PlayerController : MonoBehaviour
     {
         if (jump)
         {
-            if (maxJumps > timesJumped)
+            if (maxNumberOfJumps > timesJumped)
             {
-                Jump();
-            }
-            else
-            {
-                if (isGrounded)
+                timesJumped++;
+                if (isAgainstWall)
+                {
+                    WallJump();
+                } else
                 {
                     Jump();
                 }
@@ -87,12 +94,31 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        rBody.velocity = new Vector2(rBody.velocity.x, 0f); // reset velocity when falling down
+        ResetHorizontalVelocity();
         rBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        timesJumped++;
-        isGrounded = false;
     }
 
+
+
+    private void WallJump()
+    {
+        ResetHorizontalVelocity();
+        var jumpVector = new Vector2(GetBackDirection().x * wallJumpSideForce, 1 * jumpForce);
+        rBody.AddForce(jumpVector, ForceMode2D.Impulse);
+        StartCoroutine(WaitToEnableMovement());
+    }
+
+    IEnumerator WaitToEnableMovement()
+    {
+        isMovementEnabled = false;
+        yield return new WaitForSeconds(disabledMoveTimeAfterWallJump);
+        isMovementEnabled = true;
+    }
+
+    private void ResetHorizontalVelocity()
+    {
+        rBody.velocity = new Vector2(rBody.velocity.x, 0f);
+    }
 
     private void FlipCheck()
     {
@@ -119,14 +145,17 @@ public class PlayerController : MonoBehaviour
     private void WallTrigger(bool didEnter)
     {
         isAgainstWall = didEnter;
+        if (didEnter && isWallJumpEnabled)
+        {
+            ResetJumps();
+        }
     }
 
     private void GroundTrigger(bool didEnter)
     {
         if (didEnter)
         {
-            isGrounded = true;
-            timesJumped = 0;
+            ResetJumps();
         }
     }
 
@@ -140,5 +169,15 @@ public class PlayerController : MonoBehaviour
                 rBody.velocity = targetVelocity;
             }
         }
+    }
+
+    private Vector2 GetBackDirection()
+    {
+        return isFacingRight ? Vector2.left : Vector2.right;
+    }
+
+    private void ResetJumps()
+    {
+        timesJumped = 0;
     }
 }
