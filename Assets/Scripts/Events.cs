@@ -1,6 +1,7 @@
-﻿using UnityEngine.Events;
+﻿using System;
+using UnityEngine.Events;
 
-[System.Serializable]
+[Serializable]
 public class BoolUnityEvent : UnityEvent<bool>
 {
 }

@@ -860,10 +860,10 @@ MonoBehaviour:
   jumpForce: 20
   wallJumpSideForce: 10
   maxNumberOfJumps: 1
-  timesJumped: 0
-  isAgainstWall: 0
+  maxNumberOfDashes: 1
   maxWallSlideVelocity: 5
-  isMovementEnabled: 1
   disabledMoveTimeAfterWallJump: 0.15
+  dashSpeed: 2000
+  dashTime: 0.2
   isWallJumpEnabled: 1
   isDashEnabled: 1

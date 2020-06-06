@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashSpeed = 2000f;
     [SerializeField] private float dashTime = 0.2f;
 
+    [SerializeField] private float groundSlamSpeed = 2000f;
+
     // events
     private BoolUnityEvent groundEvent;
     private BoolUnityEvent wallEvent;
@@ -38,11 +41,13 @@ public class PlayerController : MonoBehaviour
     // abilities
     public bool isWallJumpEnabled = true;
     public bool isDashEnabled = true;
+    public bool isGroundSlamEnabled = true;
 
     // player actions
-    private float movement;
+    private float horizontalMovement;
     private bool jumpAction = false;
     private bool dashAction = false;
+    private bool groundSlamAction = false;
 
     private void Awake()
     {
@@ -57,7 +62,14 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        movement = Input.GetAxis("Horizontal");
+        horizontalMovement = Input.GetAxis("Horizontal");
+        var verticalMovement = Input.GetAxisRaw("Vertical");
+
+        if (!isGrounded && verticalMovement == -1)
+        {
+            groundSlamAction = true;
+            return;
+        }
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -75,6 +87,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (groundSlamAction)
+        {
+            GroundSlam();
+            return;
+        }
+
         FlipCheck();
         WallSlideCheck();
         ApplyDash();
@@ -86,7 +104,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isMovementEnabled) return;
 
-        Vector3 targetVelocity = new Vector2(moveSpeed * movement * Time.fixedDeltaTime, rBody.velocity.y);
+        Vector3 targetVelocity = new Vector2(moveSpeed * horizontalMovement * Time.fixedDeltaTime, rBody.velocity.y);
         rBody.velocity = targetVelocity;
     }
 
@@ -118,8 +136,9 @@ public class PlayerController : MonoBehaviour
 
     private void WallJump()
     {
+        Flip(); // maybe not needed ?
         ResetHorizontalVelocity();
-        var jumpVector = new Vector2(GetBackDirection().x * wallJumpSideForce, 1 * jumpForce);
+        var jumpVector = new Vector2(GetDirectionVector().x * wallJumpSideForce, 1 * jumpForce);
         rBody.AddForce(jumpVector, ForceMode2D.Impulse);
 
         isMovementEnabled = false;
@@ -133,11 +152,11 @@ public class PlayerController : MonoBehaviour
 
     private void FlipCheck()
     {
-        if (movement < 0 && isFacingRight)
+        if (horizontalMovement < 0 && isFacingRight)
         {
             Flip();
         }
-        else if (movement > 0 && !isFacingRight)
+        else if (horizontalMovement > 0 && !isFacingRight)
         {
             Flip();
         }
@@ -168,6 +187,7 @@ public class PlayerController : MonoBehaviour
         if (didEnter)
         {
             ResetActions();
+            groundSlamAction = false;
         }
     }
 
@@ -175,7 +195,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isAgainstWall)
         {
-            if ((isFacingRight && movement > 0) || (!isFacingRight && movement < 0))
+            if ((isFacingRight && horizontalMovement > 0) || (!isFacingRight && horizontalMovement < 0))
             {
                 Vector3 targetVelocity = new Vector2(rBody.velocity.x, Mathf.Max(rBody.velocity.y, -maxWallSlideVelocity));
                 rBody.velocity = targetVelocity;
@@ -248,5 +268,11 @@ public class PlayerController : MonoBehaviour
     private void Dash()
     {
         rBody.velocity = new Vector2(dashSpeed * GetDirectionVector().x * Time.fixedDeltaTime, 0);
+    }
+
+    private void GroundSlam()
+    {
+        isDashing = false;
+        rBody.velocity = new Vector2(0, groundSlamSpeed * -1 * Time.fixedDeltaTime);
     }
 }
