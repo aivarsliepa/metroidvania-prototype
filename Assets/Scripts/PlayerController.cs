@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float wallJumpSideForce = 10f;
     [SerializeField] private int maxNumberOfJumps = 1;
     [SerializeField] private int maxNumberOfDashes = 1;
-    [SerializeField] private float maxWallSlideVelocity = 1f;
+    [SerializeField] private float maxWallSlideVelocity = 2f;
+    [SerializeField] private float maxGlideVelocity = 1f;
     [SerializeField] private float disabledMoveTimeAfterWallJump = 0.15f;
     [SerializeField] private float dashSpeed = 2000f;
     [SerializeField] private float dashTime = 0.2f;
@@ -42,12 +43,14 @@ public class PlayerController : MonoBehaviour
     public bool isWallJumpEnabled = true;
     public bool isDashEnabled = true;
     public bool isGroundSlamEnabled = true;
+    public bool isGlideEnabled = true;
 
     // player actions
     private float horizontalMovement;
     private bool jumpAction = false;
     private bool dashAction = false;
     private bool groundSlamAction = false;
+    private bool glideAction = false;
 
     private void Awake()
     {
@@ -65,7 +68,7 @@ public class PlayerController : MonoBehaviour
         horizontalMovement = Input.GetAxis("Horizontal");
         var verticalMovement = Input.GetAxisRaw("Vertical");
 
-        if (!isGrounded && verticalMovement == -1)
+        if (isGroundSlamEnabled && !isGrounded && verticalMovement == -1)
         {
             groundSlamAction = true;
             return;
@@ -83,6 +86,20 @@ public class PlayerController : MonoBehaviour
                 dashAction = true;
             }
         }
+
+
+        if (isGlideEnabled)
+        {
+            var glideAxis = Input.GetAxisRaw("Glide");
+            if (!isGrounded && (glideAxis == 1 || glideAxis == -1))
+            {
+                glideAction = true;
+            }
+            else
+            {
+                glideAction = false;
+            }
+        }
     }
 
     void FixedUpdate()
@@ -93,9 +110,15 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (dashAction || isDashing)
+        {
+            ApplyDash();
+            return;
+        }
+
+        ApplyGliding();
         FlipCheck();
         WallSlideCheck();
-        ApplyDash();
         ApplyJumping();
         ApplyHorizontalMovement();
     }
@@ -136,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
     private void WallJump()
     {
-        Flip(); // maybe not needed ?
+        Flip();
         ResetHorizontalVelocity();
         var jumpVector = new Vector2(GetDirectionVector().x * wallJumpSideForce, 1 * jumpForce);
         rBody.AddForce(jumpVector, ForceMode2D.Impulse);
@@ -193,7 +216,7 @@ public class PlayerController : MonoBehaviour
 
     private void WallSlideCheck()
     {
-        if (isAgainstWall)
+        if (isWallJumpEnabled && isAgainstWall)
         {
             if ((isFacingRight && horizontalMovement > 0) || (!isFacingRight && horizontalMovement < 0))
             {
@@ -203,14 +226,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void ApplyGliding()
+    {
+        if (!isAgainstWall && glideAction)
+        {
+            Vector3 targetVelocity = new Vector2(rBody.velocity.x, Mathf.Max(rBody.velocity.y, -maxGlideVelocity));
+            rBody.velocity = targetVelocity;
+        }
+    }
+
     private Vector2 GetDirectionVector()
     {
         return isFacingRight ? Vector2.right : Vector2.left;
-    }
-
-    private Vector2 GetBackDirection()
-    {
-        return GetDirectionVector() * -1;
     }
 
     private void ResetJumps()
