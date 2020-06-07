@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     public BoxCollider2D groundCheck;
     public Animator animator;
 
+    // prefabs
+    [SerializeField] private GameObject bulletPrefab;
+
     // configuration
     [SerializeField] private float moveSpeed = 600f;
     [SerializeField] private float jumpForce = 20f;
@@ -45,6 +48,7 @@ public class PlayerController : MonoBehaviour
     public bool isDashEnabled = true;
     public bool isGroundSlamEnabled = true;
     public bool isGlideEnabled = true;
+    public bool isShootingEnabled = true;
 
     // player actions
     private float horizontalMovement;
@@ -52,6 +56,10 @@ public class PlayerController : MonoBehaviour
     private bool dashAction = false;
     private bool groundSlamAction = false;
     private bool glideAction = false;
+    private bool shootAction = false;
+
+
+    public float bulletForce = 30f;
 
     private void Awake()
     {
@@ -90,6 +98,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if (isShootingEnabled)
+            {
+                shootAction = true;
+            }
+        }
+
 
         if (isGlideEnabled)
         {
@@ -119,6 +135,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        ApplyShooting();
         ApplyGliding();
         FlipCheck();
         WallSlideCheck();
@@ -236,6 +253,17 @@ public class PlayerController : MonoBehaviour
             Vector3 targetVelocity = new Vector2(rBody.velocity.x, Mathf.Max(rBody.velocity.y, -maxGlideVelocity));
             rBody.velocity = targetVelocity;
         }
+    }
+
+    private void ApplyShooting()
+    {
+        if (shootAction)
+        {
+            var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+            bullet.GetComponent<Rigidbody2D>().AddForce(GetDirectionVector() * bulletForce, ForceMode2D.Impulse);
+        }
+
+        shootAction = false;
     }
 
     private Vector2 GetDirectionVector()

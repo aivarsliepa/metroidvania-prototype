@@ -406,6 +406,8 @@ MonoBehaviour:
   wallCheck: {fileID: 7812099388662934013}
   groundCheck: {fileID: 7812099387293216631}
   animator: {fileID: 7741189010493988055}
+  bulletPrefab: {fileID: 3502503876790839350, guid: 69ba9ee43b8576448add5ce4d4a5a54c,
+    type: 3}
   moveSpeed: 600
   jumpForce: 20
   wallJumpSideForce: 10
@@ -421,6 +423,8 @@ MonoBehaviour:
   isDashEnabled: 1
   isGroundSlamEnabled: 1
   isGlideEnabled: 1
+  isShootingEnabled: 1
+  bulletForce: 30
 --- !u!61 &7812099387361642907
 BoxCollider2D:
   m_ObjectHideFlags: 0
