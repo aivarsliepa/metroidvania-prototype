@@ -45,15 +45,3 @@ TagManager:
   - name: Player
     uniqueID: 98712627
     locked: 0
-  - name: LowerArm
-    uniqueID: 2261608827
-    locked: 0
-  - name: UpperArm
-    uniqueID: 1402057201
-    locked: 0
-  - name: Body
-    uniqueID: 1559043977
-    locked: 0
-  - name: Head
-    uniqueID: 3097366567
-    locked: 0
