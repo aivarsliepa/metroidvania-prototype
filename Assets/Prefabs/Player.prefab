@@ -405,6 +405,7 @@ MonoBehaviour:
   bCollider: {fileID: 7812099387361642907}
   wallCheck: {fileID: 7812099388662934013}
   groundCheck: {fileID: 7812099387293216631}
+  animator: {fileID: 7741189010493988055}
   moveSpeed: 600
   jumpForce: 20
   wallJumpSideForce: 10
@@ -477,7 +478,7 @@ Animator:
   m_GameObject: {fileID: 7812099387361642910}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8d4362e82f468fb419d9caa83acb0c64, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

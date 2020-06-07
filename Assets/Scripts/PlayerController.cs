@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public BoxCollider2D bCollider;
     public BoxCollider2D wallCheck;
     public BoxCollider2D groundCheck;
+    public Animator animator;
 
     // configuration
     [SerializeField] private float moveSpeed = 600f;
@@ -67,6 +68,8 @@ public class PlayerController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxis("Horizontal");
         var verticalMovement = Input.GetAxisRaw("Vertical");
+
+        animator.SetBool("Running", horizontalMovement != 0);
 
         if (isGroundSlamEnabled && !isGrounded && verticalMovement == -1)
         {
@@ -258,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
     private bool CanJump()
     {
-        return maxNumberOfJumps > timesJumped;
+        return isGrounded || maxNumberOfJumps > timesJumped;
     }
 
     private bool CanDash()
