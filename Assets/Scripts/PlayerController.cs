@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using UnityEditor.UI;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : ObjectWithHealth
 {
     // components
     public Rigidbody2D rBody;
@@ -14,21 +11,24 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
 
     // prefabs
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject bulletPrefab = default;
 
     // configuration
     [SerializeField] private float moveSpeed = 600f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float wallJumpSideForce = 10f;
-    [SerializeField] private int maxNumberOfJumps = 1;
-    [SerializeField] private int maxNumberOfDashes = 1;
     [SerializeField] private float maxWallSlideVelocity = 2f;
     [SerializeField] private float maxGlideVelocity = 1f;
     [SerializeField] private float disabledMoveTimeAfterWallJump = 0.15f;
     [SerializeField] private float dashSpeed = 2000f;
     [SerializeField] private float dashTime = 0.2f;
-
     [SerializeField] private float groundSlamSpeed = 2000f;
+
+    // stats
+    [SerializeField] private int maxNumberOfDashes = 1;
+    [SerializeField] private int maxNumberOfJumps = 1;
+    [SerializeField] private int maxEnergy = 2;
+
 
     // events
     private BoolUnityEvent groundEvent;
@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
     // state
     private int timesJumped = 0;
     private int timesDashed = 0;
+    private int currentEnergy;
     private bool isFacingRight = true;
     private bool isAgainstWall = false;
     private bool isMovementEnabled = true;
@@ -61,8 +62,9 @@ public class PlayerController : MonoBehaviour
 
     public float bulletForce = 30f;
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
         groundEvent = new BoolUnityEvent();
         groundCheck.GetComponent<TriggerCheck>().triggerEvent = groundEvent;
         groundEvent.AddListener(GroundTrigger);
@@ -70,14 +72,16 @@ public class PlayerController : MonoBehaviour
         wallEvent = new BoolUnityEvent();
         wallCheck.GetComponent<TriggerCheck>().triggerEvent = wallEvent;
         wallEvent.AddListener(WallTrigger);
+
+        currentEnergy = maxEnergy;
     }
 
     private void Update()
     {
-        horizontalMovement = Input.GetAxis("Horizontal");
-        var verticalMovement = Input.GetAxisRaw("Vertical");
+        horizontalMovement = Input.GetAxis(Constants.Input.HORIZONTAL);
+        var verticalMovement = Input.GetAxisRaw(Constants.Input.VERTICAL);
 
-        animator.SetBool("Running", horizontalMovement != 0);
+        animator.SetBool(Constants.PlayerAnimator.RUNNING, horizontalMovement != 0);
 
         if (isGroundSlamEnabled && !isGrounded && verticalMovement == -1)
         {
@@ -85,12 +89,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown(Constants.Input.JUMP))
         {
             jumpAction = true;
         }
 
-        if (Input.GetButtonDown("Dash"))
+        if (Input.GetButtonDown(Constants.Input.DASH))
         {
             if (isDashEnabled)
             {
@@ -98,7 +102,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown(Constants.Input.FIRE))
         {
             if (isShootingEnabled)
             {
@@ -109,7 +113,7 @@ public class PlayerController : MonoBehaviour
 
         if (isGlideEnabled)
         {
-            var glideAxis = Input.GetAxisRaw("Glide");
+            var glideAxis = Input.GetAxisRaw(Constants.Input.GLIDE);
             if (!isGrounded && (glideAxis == 1 || glideAxis == -1))
             {
                 glideAction = true;
@@ -137,7 +141,6 @@ public class PlayerController : MonoBehaviour
 
         ApplyShooting();
         ApplyGliding();
-        FlipCheck();
         WallSlideCheck();
         ApplyJumping();
         ApplyHorizontalMovement();
@@ -147,6 +150,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isMovementEnabled) return;
 
+        FlipCheck(); // might want to remove this ?? 
         Vector3 targetVelocity = new Vector2(moveSpeed * horizontalMovement * Time.fixedDeltaTime, rBody.velocity.y);
         rBody.velocity = targetVelocity;
     }
@@ -257,10 +261,12 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyShooting()
     {
-        if (shootAction)
+        if (shootAction && currentEnergy > 0)
         {
             var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
             bullet.GetComponent<Rigidbody2D>().AddForce(GetDirectionVector() * bulletForce, ForceMode2D.Impulse);
+
+            currentEnergy--;
         }
 
         shootAction = false;
@@ -332,5 +338,13 @@ public class PlayerController : MonoBehaviour
     {
         isDashing = false;
         rBody.velocity = new Vector2(0, groundSlamSpeed * -1 * Time.fixedDeltaTime);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag(Constants.Tags.ENEMY))
+        {
+            DamageBy(1);
+        }
     }
 }
