@@ -160,14 +160,7 @@ public class PlayerController : ObjectWithHealth
         if (jumpAction && CanJump())
         {
             timesJumped++;
-            if (isAgainstWall)
-            {
-                WallJump();
-            }
-            else
-            {
-                Jump();
-            }
+            Jump();
         }
 
         jumpAction = false;
@@ -179,18 +172,6 @@ public class PlayerController : ObjectWithHealth
         rBody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
-
-
-    private void WallJump()
-    {
-        Flip();
-        ResetHorizontalVelocity();
-        var jumpVector = new Vector2(GetDirectionVector().x * wallJumpSideForce, 1 * jumpForce);
-        rBody.AddForce(jumpVector, ForceMode2D.Impulse);
-
-        isMovementEnabled = false;
-        StartCoroutine(Utils.WaitForAction(disabledMoveTimeAfterWallJump, () => isMovementEnabled = true));
-    }
 
     private void ResetHorizontalVelocity()
     {
@@ -331,7 +312,7 @@ public class PlayerController : ObjectWithHealth
 
     private void Dash()
     {
-        rBody.velocity = new Vector2(dashSpeed * GetDirectionVector().x * Time.fixedDeltaTime, 0);
+        rBody.velocity = dashSpeed * GetDirectionVector() * Time.fixedDeltaTime;
     }
 
     private void GroundSlam()
