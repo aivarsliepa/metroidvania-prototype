@@ -352,8 +352,7 @@ public class PlayerController : ObjectWithHealth
 
     private void Attack()
     {
-        animator.SetTrigger(Constants.PlayerAnimator.a);
-        Debug.Log("Attack");
+        animator.SetTrigger(Constants.PlayerAnimator.ATTACK);
 
         var targets = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, attackLayers);
         foreach (Collider2D target in targets)
