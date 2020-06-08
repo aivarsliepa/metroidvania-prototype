@@ -64,7 +64,6 @@ public class PlayerController : ObjectWithHealth
     private bool shootAction = false;
     private bool attackAction = false;
 
-
     public float bulletForce = 30f;
 
     private new void Awake()
@@ -353,7 +352,7 @@ public class PlayerController : ObjectWithHealth
 
     private void Attack()
     {
-        //animator.SetTrigger(); TODO - when animation is added
+        animator.SetTrigger(Constants.PlayerAnimator.a);
         Debug.Log("Attack");
 
         var targets = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, attackLayers);

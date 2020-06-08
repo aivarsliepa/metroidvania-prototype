@@ -11,3 +11,8 @@
 - create  gizmo
 - assign variables and play test
 - TODO - animation
+
+## Player melee animation
+- new animation - have it short, with some anticipation and longer end stance
+- transition to it from any state, but do not have transition durations for any of them
+- create new trigger "Attack" (constants and animator)
