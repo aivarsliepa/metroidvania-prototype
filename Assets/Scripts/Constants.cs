@@ -16,6 +16,7 @@
         public static string GLIDE = "Glide";
         public static string VERTICAL = "Vertical";
         public static string HORIZONTAL = "Horizontal";
+        public static string ATTACK = "Attack";
     }
 
     public static class PlayerAnimator

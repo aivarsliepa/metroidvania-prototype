@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &879614708479310565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3171815423812916415}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3171815423812916415
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879614708479310565}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.28, y: 0.06, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7812099387361642909}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2897179598421231860
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,6 +416,7 @@ Transform:
   - {fileID: 4403974895905993622}
   - {fileID: 7812099387293216629}
   - {fileID: 7812099388662934011}
+  - {fileID: 3171815423812916415}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -402,25 +433,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3
-  currentHealth: 0
   rBody: {fileID: 7812099387361642908}
   bCollider: {fileID: 7812099387361642907}
   wallCheck: {fileID: 7812099388662934013}
   groundCheck: {fileID: 7812099387293216631}
   animator: {fileID: 7741189010493988055}
+  attackPoint: {fileID: 3171815423812916415}
   bulletPrefab: {fileID: 3502503876790839350, guid: 69ba9ee43b8576448add5ce4d4a5a54c,
     type: 3}
   moveSpeed: 600
   jumpForce: 20
-  wallJumpSideForce: 10
-  maxNumberOfJumps: 1
-  maxNumberOfDashes: 1
   maxWallSlideVelocity: 2
   maxGlideVelocity: 1
-  disabledMoveTimeAfterWallJump: 0.15
   dashSpeed: 2000
   dashTime: 0.2
   groundSlamSpeed: 2000
+  attackCooldown: 1
+  attackLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  attackRadius: 2
+  attackDamage: 1
+  maxNumberOfDashes: 1
+  maxNumberOfJumps: 1
+  maxEnergy: 2
   isWallJumpEnabled: 1
   isDashEnabled: 1
   isGroundSlamEnabled: 1

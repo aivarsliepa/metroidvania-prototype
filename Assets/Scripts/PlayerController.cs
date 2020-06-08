@@ -9,6 +9,7 @@ public class PlayerController : ObjectWithHealth
     public BoxCollider2D wallCheck;
     public BoxCollider2D groundCheck;
     public Animator animator;
+    public Transform attackPoint;
 
     // prefabs
     [SerializeField] private GameObject bulletPrefab = default;
@@ -16,13 +17,15 @@ public class PlayerController : ObjectWithHealth
     // configuration
     [SerializeField] private float moveSpeed = 600f;
     [SerializeField] private float jumpForce = 20f;
-    [SerializeField] private float wallJumpSideForce = 10f;
     [SerializeField] private float maxWallSlideVelocity = 2f;
     [SerializeField] private float maxGlideVelocity = 1f;
-    [SerializeField] private float disabledMoveTimeAfterWallJump = 0.15f;
     [SerializeField] private float dashSpeed = 2000f;
     [SerializeField] private float dashTime = 0.2f;
     [SerializeField] private float groundSlamSpeed = 2000f;
+    [SerializeField] private float attackCooldown = 1f;
+    [SerializeField] private LayerMask attackLayers = default;
+    [SerializeField] private float attackRadius = 2f;
+    [SerializeField] private int attackDamage = 1;
 
     // stats
     [SerializeField] private int maxNumberOfDashes = 1;
@@ -43,6 +46,7 @@ public class PlayerController : ObjectWithHealth
     private bool isMovementEnabled = true;
     private bool isDashing = false;
     private bool isGrounded = true;
+    private bool isAttackOnCooldown = false;
 
     // abilities
     public bool isWallJumpEnabled = true;
@@ -58,6 +62,7 @@ public class PlayerController : ObjectWithHealth
     private bool groundSlamAction = false;
     private bool glideAction = false;
     private bool shootAction = false;
+    private bool attackAction = false;
 
 
     public float bulletForce = 30f;
@@ -92,6 +97,12 @@ public class PlayerController : ObjectWithHealth
         if (Input.GetButtonDown(Constants.Input.JUMP))
         {
             jumpAction = true;
+        }
+
+        if (!isAttackOnCooldown && Input.GetButtonDown(Constants.Input.ATTACK))
+        {
+            attackAction = true;
+            return;
         }
 
         if (Input.GetButtonDown(Constants.Input.DASH))
@@ -139,10 +150,17 @@ public class PlayerController : ObjectWithHealth
             return;
         }
 
+        ApplyJumping();
+
+        if (attackAction)
+        {
+            ApplyAttack();
+            return;
+        }
+
         ApplyShooting();
         ApplyGliding();
         WallSlideCheck();
-        ApplyJumping();
         ApplyHorizontalMovement();
     }
 
@@ -321,11 +339,40 @@ public class PlayerController : ObjectWithHealth
         rBody.velocity = new Vector2(0, groundSlamSpeed * -1 * Time.fixedDeltaTime);
     }
 
+    private void ApplyAttack()
+    {
+        attackAction = false;
+        isAttackOnCooldown = true;
+        StartCoroutine(Utils.WaitForAction(attackCooldown, () =>
+        {
+            isAttackOnCooldown = false;
+        }));
+
+        Attack();
+    }
+
+    private void Attack()
+    {
+        //animator.SetTrigger(); TODO - when animation is added
+        Debug.Log("Attack");
+
+        var targets = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius, attackLayers);
+        foreach (Collider2D target in targets)
+        {
+            target.GetComponent<ObjectWithHealth>()?.DamageBy(attackDamage);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag(Constants.Tags.ENEMY))
         {
             DamageBy(1);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
     }
 }

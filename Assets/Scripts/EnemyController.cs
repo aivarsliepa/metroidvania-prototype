@@ -1,19 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : ObjectWithHealth
 {
     // config
-    [SerializeField] private float moveSpeed = 150f;
+    [SerializeField] private float moveSpeed = 200f;
 
     // components
     public Rigidbody2D rBody;
 
     private Vector2 moveDirection;
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
         moveDirection = Vector2.left;
     }
 
