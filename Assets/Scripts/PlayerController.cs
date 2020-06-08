@@ -293,7 +293,7 @@ public class PlayerController : ObjectWithHealth
 
     private bool CanJump()
     {
-        return isGrounded || maxNumberOfJumps > timesJumped;
+        return isGrounded || (isWallJumpEnabled && isAgainstWall) || maxNumberOfJumps > timesJumped;
     }
 
     private bool CanDash()
