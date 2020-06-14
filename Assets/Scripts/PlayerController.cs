@@ -64,7 +64,7 @@ public class PlayerController : ObjectWithHealth
     private bool shootAction = false;
     private bool attackAction = false;
 
-    public float bulletForce = 30f;
+    public float bulletSpeed = 30f;
 
     private new void Awake()
     {
@@ -262,7 +262,7 @@ public class PlayerController : ObjectWithHealth
         if (shootAction && currentEnergy > 0)
         {
             var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-            bullet.GetComponent<Rigidbody2D>().AddForce(GetDirectionVector() * bulletForce, ForceMode2D.Impulse);
+            bullet.GetComponent<Rigidbody2D>().velocity = GetDirectionVector() * bulletSpeed;
 
             currentEnergy--;
         }
